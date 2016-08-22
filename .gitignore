@@ -2,5 +2,6 @@
 /local.properties
 /keystore.properties
 /.idea
+/annotations
 *.iml
 build
