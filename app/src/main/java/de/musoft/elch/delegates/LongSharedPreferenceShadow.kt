@@ -7,8 +7,7 @@ import android.content.SharedPreferences
  */
 
 open class LongSharedPreferenceShadow(sharedPreferences: SharedPreferences, key: String, default: Long) :
-        KeyValueShadow<Long>(key, default,
-                { key, default -> sharedPreferences.getLong(key, default) },
+        KeyValueShadow<Long>(key, sharedPreferences.getLong(key, default),
                 { key, value -> sharedPreferences.edit().putLong(key, value).apply() }) {
 }
 

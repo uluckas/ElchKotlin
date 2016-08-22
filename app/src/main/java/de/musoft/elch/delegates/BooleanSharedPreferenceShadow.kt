@@ -7,7 +7,6 @@ import android.content.SharedPreferences
  */
 
 open class BooleanSharedPreferenceShadow(sharedPreferences: SharedPreferences, key: String, default: Boolean) :
-        KeyValueShadow<Boolean>(key, default,
-                { key, default -> sharedPreferences.getBoolean(key, default) },
+        KeyValueShadow<Boolean>(key, sharedPreferences.getBoolean(key, default),
                 { key, value -> sharedPreferences.edit().putBoolean(key, value).apply() }) {
 }
