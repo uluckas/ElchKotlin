@@ -41,10 +41,13 @@ class AlarmReceiver : BroadcastReceiver() {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM)
         mediaPlayer.setVolume(volume, volume)
         mediaPlayer.setOnPreparedListener {
-            mediaPlayer.start()
-            // No more need to hold the WakeLock
-            // While playing, the MediaPlayer holds it's own WakeLock
-            wakeLock.release()
+            try {
+                mediaPlayer.start()
+            } finally {
+                // No more need to hold the WakeLock
+                // While playing, the MediaPlayer holds it's own WakeLock
+                wakeLock.release()
+            }
         }
         if (tryPrepareAsync(mediaPlayer)) {
             // If prepareAsync succeeded, we can be sure, the onPreparedListener will be called
