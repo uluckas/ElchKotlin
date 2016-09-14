@@ -11,6 +11,8 @@ import de.musoft.elch.extensions.sToM
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_elch.*
 
+private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
+
 class ElchActivity : Activity() {
 
     private val alarmTimer by lazy {
@@ -44,5 +46,4 @@ class ElchActivity : Activity() {
     }
 
 }
-private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
 
