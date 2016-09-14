@@ -11,7 +11,7 @@ import de.musoft.elch.extensions.sToM
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_elch.*
 
-class ElchActivity : Activity(), AlarmTimer.SecondsListener {
+class ElchActivity : Activity() {
 
     private val alarmTimer by lazy {
         AlarmTimer(applicationContext)
@@ -29,20 +29,20 @@ class ElchActivity : Activity(), AlarmTimer.SecondsListener {
 
     override fun onResume() {
         super.onResume()
-        alarmTimer.addSecondsListener(this)
+        alarmTimer.addSecondsListener(onSecondsChanged)
     }
 
     override fun onPause() {
-        alarmTimer.removeSecondsListener(this)
+        alarmTimer.removeSecondsListener(onSecondsChanged)
         super.onPause()
     }
 
-    override fun onSecondsChanged(remainingSeconds: Long) {
+    val onSecondsChanged = { remainingSeconds: Long ->
         val minutes = remainingSeconds.sToM()
         val seconds = remainingSeconds - minutes.mToS()
         time.text = timeString(minutes, seconds)
     }
-}
 
+}
 private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
 
