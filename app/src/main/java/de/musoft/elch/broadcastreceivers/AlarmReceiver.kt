@@ -5,9 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.PowerManager
 import com.example.elch.app.R
+import de.musoft.elch.extensions.powerManager
+import de.musoft.elch.extensions.uriForRessource
 
 private const val volume = 1.0f
 
@@ -30,9 +31,9 @@ private fun tryPrepareAsync(mediaPlayer: MediaPlayer): Boolean {
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val uri = Uri.parse("android.resource://" + context.applicationContext.packageName + "/" + R.raw.ring)
+        val uri = context.uriForRessource(R.raw.ring)
         val mediaPlayer = MediaPlayer()
-        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pm = context.powerManager
         val wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AlarmHandover")
 
         mediaPlayer.setOnCompletionListener { it.release() }

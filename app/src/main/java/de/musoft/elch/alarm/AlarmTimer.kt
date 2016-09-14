@@ -12,6 +12,7 @@ import android.os.SystemClock
 import de.musoft.elch.broadcastreceivers.AlarmReceiver
 import de.musoft.elch.delegates.BooleanSharedPreferenceShadow
 import de.musoft.elch.delegates.LongSharedPreferenceShadow
+import de.musoft.elch.extensions.alarmManager
 import de.musoft.elch.extensions.mToMs
 import de.musoft.elch.extensions.msToS
 import java.util.*
@@ -40,7 +41,7 @@ class AlarmTimer(private val applicationContext: Context) {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val secondsChangedCallbacks = ArrayList<(Long) -> Unit>()
     private var secondsTimer: Timer? = null
-    private val alarmManager: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private val alarmManager: AlarmManager = applicationContext.alarmManager
     private val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("TimerState", Context.MODE_PRIVATE)
     private var alarmTimeMS: Long by LongSharedPreferenceShadow(sharedPreferences, KEY_ALARM_TIME_MS, 0)
     private var timerRunning: Boolean by BooleanSharedPreferenceShadow(sharedPreferences, KEY_TIMER_RUNNING, false)
