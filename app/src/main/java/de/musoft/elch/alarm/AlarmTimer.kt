@@ -28,6 +28,8 @@ private const val KEY_TIMER_RUNNING = "TIMER_RUNNING"
 private const val KEY_ALARM_TIME_MS = "ALARM_TIME_MS"
 private const val KEY_REMAINING_TIME_MS = "REMAINING_TIME_MS"
 
+private const val S_IN_MS = 1000L
+
 private val SPIELZEIT_DURATION_MS = SPIELZEIT_DURATION_MIN.mToMs()
 
 private fun getAlarmIntent(context: Context, flags: Int): PendingIntent {
@@ -36,11 +38,12 @@ private fun getAlarmIntent(context: Context, flags: Int): PendingIntent {
     return PendingIntent.getBroadcast(context, 0, intent, flags)
 }
 
+
 class AlarmTimer(private val applicationContext: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val secondsChangedCallbacks = ArrayList<(Long) -> Unit>()
-    private var secondsTimer: Timer? = null
+    private var secondsChangeTimer: Timer? = null
     private val alarmManager: AlarmManager = applicationContext.alarmManager
     private val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("TimerState", Context.MODE_PRIVATE)
     private var alarmTimeMS: Long by LongSharedPreferenceShadow(sharedPreferences, KEY_ALARM_TIME_MS, 0)
@@ -72,7 +75,7 @@ class AlarmTimer(private val applicationContext: Context) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
         secondsChangedCallbacks.add(secondsChangedCallback)
         if (hadNoListeners && timerRunning) {
-            startSecondsTimer()
+            startSecondsChangeTimer()
         }
         // Give initial update to the secondsChangedCallback
         secondsChangedCallback(computedRemainigTimeS)
@@ -81,7 +84,7 @@ class AlarmTimer(private val applicationContext: Context) {
     fun removeSecondsListener(listener: (Long) -> Unit) {
         secondsChangedCallbacks.remove(listener)
         if (secondsChangedCallbacks.isEmpty()) {
-            cancelSecondsTimer()
+            cancelSecondsChangeTimer()
         }
     }
 
@@ -94,7 +97,7 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     fun resetTimer() {
-        cancelSecondsTimer()
+        cancelSecondsChangeTimer()
         cancelAlarm()
         remainingTimeMS = SPIELZEIT_DURATION_MS
     }
@@ -114,13 +117,13 @@ class AlarmTimer(private val applicationContext: Context) {
     private fun pauseTimer() {
         remainingTimeMS = computedRemainingTimeMS
         cancelAlarm()
-        cancelSecondsTimer()
+        cancelSecondsChangeTimer()
     }
 
     private fun startTimer(alarmTimeMS: Long) {
         setAlarm(alarmTimeMS)
         if (!secondsChangedCallbacks.isEmpty()) {
-            startSecondsTimer()
+            startSecondsChangeTimer()
         }
     }
 
@@ -141,26 +144,28 @@ class AlarmTimer(private val applicationContext: Context) {
         timerRunning = false
     }
 
-    private fun cancelSecondsTimer() {
-        secondsTimer?.cancel()
-        secondsTimer = null
+    private fun cancelSecondsChangeTimer() {
+        secondsChangeTimer?.cancel()
+        secondsChangeTimer = null
     }
 
-    private fun startSecondsTimer() {
-        val nextFullSecond = computedRemainingTimeMS % 1000L
-        val newSecondsTimer = Timer("Timer", true)
-        newSecondsTimer.scheduleAtFixedRate(object: TimerTask() {
+    private fun startSecondsChangeTimer() {
+        val newSecondsChangeTimer = Timer("SecondsChangeTimer", true)
+        val onSecondChanged: TimerTask = object : TimerTask() {
 
             override fun run() {
-                mainHandler.post {
+                runOnMainThread {
                     if (computedRemainingTimeMS <= 0L) {
-                        cancelSecondsTimer()
+                        cancelSecondsChangeTimer()
                     }
                     fireSecondsChanged()
                 }
             }
-        }, nextFullSecond, 1000L)
-        secondsTimer = newSecondsTimer
+
+        }
+        val timeNextSecondMS = computedRemainingTimeMS % S_IN_MS
+        newSecondsChangeTimer.scheduleAtFixedRate(onSecondChanged, timeNextSecondMS, S_IN_MS)
+        secondsChangeTimer = newSecondsChangeTimer
     }
 
     private fun fireSecondsChanged() {
@@ -169,4 +174,7 @@ class AlarmTimer(private val applicationContext: Context) {
         }
     }
 
+    private fun runOnMainThread(function: () -> Unit) {
+        mainHandler.post(function)
+    }
 }
