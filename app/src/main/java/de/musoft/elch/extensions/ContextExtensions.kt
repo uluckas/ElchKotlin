@@ -9,7 +9,11 @@ import android.os.PowerManager
  * Created by luckas on 15.09.16.
  */
 
-inline fun Context.uriForRessource(resourceId: Int) = Uri.parse("android.resource://" + packageName + "/" + resourceId)
+inline fun Context.uriForRessource(resourceId: Int) = Uri.Builder().
+        scheme("android.resource").
+        appendPath(packageName).
+        appendPath(resourceId.toString()).
+        build()
 
 val Context.alarmManager: AlarmManager
     get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
