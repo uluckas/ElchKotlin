@@ -85,7 +85,9 @@ class AlarmTimer(private val applicationContext: Context) {
 
     fun removeSecondsListener(listener: SecondsListener) {
         listeners.remove(listener)
-        cancelSecondsTimer()
+        if (listeners.isEmpty()) {
+            cancelSecondsTimer()
+        }
     }
 
     fun startOrPauseTimer() {
