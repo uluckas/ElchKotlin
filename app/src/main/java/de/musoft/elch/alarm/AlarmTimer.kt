@@ -3,13 +3,12 @@ package de.musoft.elch.alarm
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import de.musoft.elch.broadcastreceivers.AlarmReceiver
+import de.musoft.elch.broadcastreceivers.getAlarmIntent
 import de.musoft.elch.delegates.BooleanSharedPreferenceShadow
 import de.musoft.elch.delegates.LongSharedPreferenceShadow
 import de.musoft.elch.extensions.alarmManager
@@ -22,7 +21,6 @@ import kotlin.reflect.KProperty
  * Created by luckas on 1/29/15.
  */
 
-private const val ELCH_ACTION = "de.musoft.elch.alarm.ELCH_ALARM"
 private const val SPIELZEIT_DURATION_MIN: Long = 8L
 private const val KEY_TIMER_RUNNING = "TIMER_RUNNING"
 private const val KEY_ALARM_TIME_MS = "ALARM_TIME_MS"
@@ -31,12 +29,6 @@ private const val KEY_REMAINING_TIME_MS = "REMAINING_TIME_MS"
 private const val S_IN_MS = 1000L
 
 private val SPIELZEIT_DURATION_MS = SPIELZEIT_DURATION_MIN.mToMs()
-
-private fun getAlarmIntent(context: Context, flags: Int): PendingIntent {
-    val intent = Intent(ELCH_ACTION)
-    intent.setClass(context, AlarmReceiver::class.java)
-    return PendingIntent.getBroadcast(context, 0, intent, flags)
-}
 
 
 class AlarmTimer(private val applicationContext: Context) {
