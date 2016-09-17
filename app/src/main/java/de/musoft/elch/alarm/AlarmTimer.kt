@@ -39,7 +39,7 @@ class AlarmTimer(private val applicationContext: Context) {
     private val alarmManager: AlarmManager = applicationContext.alarmManager
     private val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("TimerState", Context.MODE_PRIVATE)
     private var alarmTimeMS: Long by LongSharedPreferenceShadow(sharedPreferences, KEY_ALARM_TIME_MS, 0)
-    private var timerRunning: Boolean by BooleanSharedPreferenceShadow(sharedPreferences, KEY_TIMER_RUNNING, false)
+    private var countdownRunning: Boolean by BooleanSharedPreferenceShadow(sharedPreferences, KEY_TIMER_RUNNING, false)
 
     private var remainingTimeMS: Long  by object : LongSharedPreferenceShadow(sharedPreferences, KEY_REMAINING_TIME_MS, SPIELZEIT_DURATION_MS) {
         override operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Long) {
@@ -49,11 +49,11 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     init {
-        if (timerRunning) {
+        if (countdownRunning) {
             // If alarm time is in the past, the running timer already expired
             // If alarm time is too far in the future, the saved timer is probably from before the last boot
             if (alarmTimeMS <= SystemClock.elapsedRealtime() || alarmTimeMS > SystemClock.elapsedRealtime() + SPIELZEIT_DURATION_MS ) {
-                timerRunning = false
+                countdownRunning = false
                 remainingTimeMS = SPIELZEIT_DURATION_MS
             }
         } else {
@@ -66,7 +66,7 @@ class AlarmTimer(private val applicationContext: Context) {
     fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
         secondsChangedCallbacks.add(secondsChangedCallback)
-        if (hadNoListeners && timerRunning) {
+        if (hadNoListeners && countdownRunning) {
             startSecondsChangeTimer()
         }
         // Give initial update to the secondsChangedCallback
@@ -80,39 +80,39 @@ class AlarmTimer(private val applicationContext: Context) {
         }
     }
 
-    fun startOrPauseTimer() {
-        if (timerRunning) {
-            pauseTimer()
+    fun startOrPauseCountdown() {
+        if (countdownRunning) {
+            pauseCountdown()
         } else {
-            startTimer(computedAlarmTimeMS)
+            startCountdown(computedAlarmTimeMS)
         }
     }
 
-    fun resetTimer() {
+    fun resetCountdown() {
         cancelSecondsChangeTimer()
         cancelAlarm()
         remainingTimeMS = SPIELZEIT_DURATION_MS
     }
 
     private val computedAlarmTimeMS: Long
-        get() = if (timerRunning) alarmTimeMS else SystemClock.elapsedRealtime() + remainingTimeMS
+        get() = if (countdownRunning) alarmTimeMS else SystemClock.elapsedRealtime() + remainingTimeMS
 
     private val computedRemainingTimeMS: Long
         get() {
-            val computedRemainigTimeMs = if (timerRunning) alarmTimeMS - SystemClock.elapsedRealtime() else remainingTimeMS
+            val computedRemainigTimeMs = if (countdownRunning) alarmTimeMS - SystemClock.elapsedRealtime() else remainingTimeMS
             return if (computedRemainigTimeMs < 0) 0 else computedRemainigTimeMs
         }
 
     private val computedRemainigTimeS: Long
         get() = (computedRemainingTimeMS + 500L).msToS()
 
-    private fun pauseTimer() {
+    private fun pauseCountdown() {
         remainingTimeMS = computedRemainingTimeMS
         cancelAlarm()
         cancelSecondsChangeTimer()
     }
 
-    private fun startTimer(alarmTimeMS: Long) {
+    private fun startCountdown(alarmTimeMS: Long) {
         setAlarm(alarmTimeMS)
         if (!secondsChangedCallbacks.isEmpty()) {
             startSecondsChangeTimer()
@@ -127,13 +127,13 @@ class AlarmTimer(private val applicationContext: Context) {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, newAlarmTimeMS, pendingIntent)
         }
         alarmTimeMS = newAlarmTimeMS
-        timerRunning = true
+        countdownRunning = true
     }
 
     private fun cancelAlarm() {
         val pendingIntent = getAlarmIntent(applicationContext, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(pendingIntent)
-        timerRunning = false
+        countdownRunning = false
     }
 
     private fun cancelSecondsChangeTimer() {

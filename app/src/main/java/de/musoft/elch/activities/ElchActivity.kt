@@ -25,8 +25,8 @@ class ElchActivity : Activity() {
 
         setContentView(R.layout.activity_elch)
 
-        start_button.setOnClickListener { alarmTimer.startOrPauseTimer() }
-        reset_button.setOnClickListener { alarmTimer.resetTimer() }
+        start_button.setOnClickListener { alarmTimer.startOrPauseCountdown() }
+        reset_button.setOnClickListener { alarmTimer.resetCountdown() }
     }
 
     override fun onResume() {
