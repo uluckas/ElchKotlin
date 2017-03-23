@@ -26,7 +26,7 @@ class AlarmTimer(private val applicationContext: Context) {
         fireSecondsChanged()
     }
 
-     fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
+    fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
         secondsChangedCallbacks.add(secondsChangedCallback)
         if (hadNoListeners && model.countdownRunning) {
@@ -120,4 +120,5 @@ class AlarmTimer(private val applicationContext: Context) {
     private fun runOnMainThread(function: () -> Unit) {
         mainHandler.post(function)
     }
+
 }

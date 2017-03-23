@@ -49,7 +49,7 @@ class AlarmTimerModel(private val applicationContext: Context, val secondsChange
         if (countdownRunning) {
             // If alarm time is in the past, the running timer already expired
             // If alarm time is too far in the future, the saved timer is probably from before the last boot
-            if (alarmTimeMS <= SystemClock.elapsedRealtime() || alarmTimeMS > SystemClock.elapsedRealtime() + SPIELZEIT_DURATION_MS ) {
+            if (alarmTimeMS <= SystemClock.elapsedRealtime() || alarmTimeMS > SystemClock.elapsedRealtime() + SPIELZEIT_DURATION_MS) {
                 countdownRunning = false
                 remainingTimeMS = SPIELZEIT_DURATION_MS
             }
