@@ -40,9 +40,9 @@ abstract class ElchBaseActivity : Activity(), ElchView {
         super.onPause()
     }
 
-    override fun setRemainingTime(newTime: Long, unit: TimeUnit) {
-        val minutes = unit.toMinutes(newTime)
-        val seconds = unit.toSeconds(newTime) - minutes.mToS()
+    override fun setRemainingTime(value: Long, unit: TimeUnit) {
+        val minutes = unit.toMinutes(value)
+        val seconds = unit.toSeconds(value) - minutes.mToS()
         timeLabel.text = timeString(minutes, seconds)
     }
 }

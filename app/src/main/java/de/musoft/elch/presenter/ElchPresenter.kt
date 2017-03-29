@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 interface ElchView {
 
-    fun setRemainingTime(time: Long, unit: TimeUnit)
+    fun setRemainingTime(value: Long, unit: TimeUnit)
 
 }
 
