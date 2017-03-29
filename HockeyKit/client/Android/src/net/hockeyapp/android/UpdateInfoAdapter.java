@@ -179,14 +179,17 @@ public class UpdateInfoAdapter extends BaseAdapter {
     return row;
   }
 
+  // Constant is used as ressource id
   private View getWebView(int position, View convertView, ViewGroup parent) {
     View row = convertView;
+    //noinspection ResourceType
     if ((row == null) || (row.findViewById(1337) == null)) {
       RelativeLayout layout = new RelativeLayout(activity);
       layout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.WRAP_CONTENT));
       row = layout;
       
       WebView webView = new WebView(activity);
+      //noinspection ResourceType
       webView.setId(1337);
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT); 
       float scale = activity.getResources().getDisplayMetrics().density;
@@ -195,7 +198,8 @@ public class UpdateInfoAdapter extends BaseAdapter {
       webView.setLayoutParams(params);
       layout.addView(webView);
     }
-      
+
+    //noinspection ResourceType
     WebView webView = (WebView)row.findViewById(1337);
 
     String item = (String)getItem(position);
