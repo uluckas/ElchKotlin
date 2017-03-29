@@ -34,13 +34,13 @@ android {
         }
     }
     compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "de.musoft.elch.app"
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 13
-        versionName "13.0"
+        versionCode 19
+        versionName "19.0"
         signingConfig signingConfigs.release
     }
     compileOptions {
@@ -50,10 +50,12 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            ext.betaDistributionGroupAliases="testers"
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.betaDistributionGroupAliases="testers"
         }
     }
     productFlavors {
@@ -70,4 +72,5 @@ dependencies {
         transitive = true;
     }
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(':hockeykit')
 }

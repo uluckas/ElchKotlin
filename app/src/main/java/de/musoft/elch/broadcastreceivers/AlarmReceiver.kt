@@ -7,7 +7,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.PowerManager
-import com.example.elch.app.R
+import de.musoft.elch.app.R
 
 private const val volume = 1.0f
 

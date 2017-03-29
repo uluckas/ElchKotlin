@@ -2,16 +2,13 @@ package de.musoft.elch.activities
 
 import android.app.Activity
 import android.os.Bundle
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.beta.Beta
-import com.example.elch.app.R
 import de.musoft.elch.alarm.AlarmTimer
+import de.musoft.elch.app.R
 import de.musoft.elch.extensions.mToS
 import de.musoft.elch.extensions.sToM
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_elch.*
 
-class ElchActivity : Activity(), AlarmTimer.SecondsListener {
+abstract class ElchBaseActivity : Activity(), AlarmTimer.SecondsListener {
 
     private val alarmTimer by lazy {
         AlarmTimer(applicationContext)
@@ -19,13 +16,15 @@ class ElchActivity : Activity(), AlarmTimer.SecondsListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics(), Beta())
+        setupFabric()
 
         setContentView(R.layout.activity_elch)
 
         start_button.setOnClickListener { alarmTimer.startOrPauseTimer() }
         reset_button.setOnClickListener { alarmTimer.resetTimer() }
     }
+
+    protected abstract fun setupFabric()
 
     override fun onResume() {
         super.onResume()
@@ -42,6 +41,7 @@ class ElchActivity : Activity(), AlarmTimer.SecondsListener {
         val seconds = remainingSeconds - minutes.mToS()
         time.text = timeString(minutes, seconds)
     }
+
 }
 
 private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
