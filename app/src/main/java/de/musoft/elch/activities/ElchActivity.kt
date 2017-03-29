@@ -4,46 +4,47 @@ import android.app.Activity
 import android.os.Bundle
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.beta.Beta
-import com.example.elch.app.R
+import com.example.elch.app.R.layout.activity_elch
 import de.musoft.elch.alarm.AlarmTimer
 import de.musoft.elch.extensions.mToS
-import de.musoft.elch.extensions.sToM
+import de.musoft.elch.presenter.ElchPresenter
+import de.musoft.elch.presenter.ElchView
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_elch.*
+import java.util.concurrent.TimeUnit
 
 private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
 
-class ElchActivity : Activity() {
+class ElchActivity : Activity(), ElchView {
 
-    private val alarmTimer by lazy {
-        AlarmTimer(applicationContext)
+    private val presenter by lazy {
+        ElchPresenter(AlarmTimer(applicationContext))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(this, Crashlytics(), Beta())
 
-        setContentView(R.layout.activity_elch)
+        setContentView(activity_elch)
 
-        start_button.setOnClickListener { alarmTimer.startOrPauseCountdown() }
-        reset_button.setOnClickListener { alarmTimer.resetCountdown() }
+        start_button.setOnClickListener { presenter.startStopClicked() }
+        reset_button.setOnClickListener { presenter.resetClicked() }
     }
 
     override fun onResume() {
         super.onResume()
-        alarmTimer.addSecondsListener(onSecondsChanged)
+        presenter.attachView(this)
     }
 
     override fun onPause() {
-        alarmTimer.removeSecondsListener(onSecondsChanged)
+        presenter.detachView()
         super.onPause()
     }
 
-    val onSecondsChanged = { remainingSeconds: Long ->
-        val minutes = remainingSeconds.sToM()
-        val seconds = remainingSeconds - minutes.mToS()
-        time.text = timeString(minutes, seconds)
+    override fun setRemainingTime(newTime: Long, unit: TimeUnit) {
+        val minutes = unit.toMinutes(newTime)
+        val seconds = unit.toSeconds(newTime) - minutes.mToS()
+        timeLabel.text = timeString(minutes, seconds)
     }
-
 }
 

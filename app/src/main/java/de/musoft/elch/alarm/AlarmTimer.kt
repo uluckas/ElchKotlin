@@ -25,6 +25,8 @@ class AlarmTimer(private val applicationContext: Context) {
     private val model = AlarmTimerModel(applicationContext) {
         fireSecondsChanged()
     }
+    val remainingTime = model.computedRemainingTimeMS
+    val isRunning = model.countdownRunning
 
     fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()

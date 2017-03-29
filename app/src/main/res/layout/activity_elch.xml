@@ -16,7 +16,7 @@
         android:src="@drawable/elch" />
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/timeLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
