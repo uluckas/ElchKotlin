@@ -6,9 +6,9 @@ import de.musoft.elch.alarm.AlarmTimer
 import io.fabric.sdk.android.DefaultLogger
 import io.fabric.sdk.android.Fabric
 
-class ElchActivity : ElchBaseActivity(), AlarmTimer.SecondsListener {
+class ElchActivity : ElchBaseActivity() {
 
-    private fun setupFabric() {
+    protected override fun setupFabric() {
         Fabric.with(Fabric.Builder(this)
                 .kits(Crashlytics(), Beta())
                 .logger(DefaultLogger(1))

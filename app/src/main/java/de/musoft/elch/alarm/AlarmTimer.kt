@@ -37,14 +37,8 @@ private fun getAlarmIntent(context: Context, flags: Int): PendingIntent {
 
 class AlarmTimer(private val applicationContext: Context) {
 
-    interface SecondsListener {
-
-        fun onSecondsChanged(remainingSeconds: Long)
-
-    }
-
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val listeners = ArrayList<SecondsListener>()
+    private val secondsChangedCallbacks = ArrayList<(Long) -> Unit>()
     private var secondsTimer: Timer? = null
     private val alarmManager: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("TimerState", Context.MODE_PRIVATE)
@@ -73,19 +67,21 @@ class AlarmTimer(private val applicationContext: Context) {
         }
     }
 
-    fun addSecondsListener(listener: SecondsListener) {
-        val hadNoListeners = listeners.isEmpty()
-        listeners.add(listener)
+    fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
+        val hadNoListeners = secondsChangedCallbacks.isEmpty()
+        secondsChangedCallbacks.add(secondsChangedCallback)
         if (hadNoListeners && timerRunning) {
             startSecondsTimer()
         }
-        // Give initial update to the listener
-        listener.onSecondsChanged(computedRemainigTimeS)
+        // Give initial update to the secondsChangedCallback
+        secondsChangedCallback(computedRemainigTimeS)
     }
 
-    fun removeSecondsListener(listener: SecondsListener) {
-        listeners.remove(listener)
-        cancelSecondsTimer()
+    fun removeSecondsListener(listener: (Long) -> Unit) {
+        secondsChangedCallbacks.remove(listener)
+        if (secondsChangedCallbacks.isEmpty()) {
+            cancelSecondsTimer()
+        }
     }
 
     fun startOrPauseTimer() {
@@ -122,7 +118,7 @@ class AlarmTimer(private val applicationContext: Context) {
 
     private fun startTimer(alarmTimeMS: Long) {
         setAlarm(alarmTimeMS)
-        if (!listeners.isEmpty()) {
+        if (!secondsChangedCallbacks.isEmpty()) {
             startSecondsTimer()
         }
     }
@@ -167,8 +163,8 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     private fun fireSecondsChanged() {
-        for (listener in listeners) {
-            listener.onSecondsChanged(computedRemainigTimeS)
+        for (secondsChangedCallback in secondsChangedCallbacks) {
+            secondsChangedCallback(computedRemainigTimeS)
         }
     }
 

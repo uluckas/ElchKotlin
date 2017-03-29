@@ -8,7 +8,9 @@ import de.musoft.elch.extensions.mToS
 import de.musoft.elch.extensions.sToM
 import kotlinx.android.synthetic.main.activity_elch.*
 
-abstract class ElchBaseActivity : Activity(), AlarmTimer.SecondsListener {
+private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
+
+abstract class ElchBaseActivity : Activity() {
 
     private val alarmTimer by lazy {
         AlarmTimer(applicationContext)
@@ -28,21 +30,19 @@ abstract class ElchBaseActivity : Activity(), AlarmTimer.SecondsListener {
 
     override fun onResume() {
         super.onResume()
-        alarmTimer.addSecondsListener(this)
+        alarmTimer.addSecondsListener(onSecondsChanged)
     }
 
     override fun onPause() {
-        alarmTimer.removeSecondsListener(this)
+        alarmTimer.removeSecondsListener(onSecondsChanged)
         super.onPause()
     }
 
-    override fun onSecondsChanged(remainingSeconds: Long) {
+    val onSecondsChanged = { remainingSeconds: Long ->
         val minutes = remainingSeconds.sToM()
         val seconds = remainingSeconds - minutes.mToS()
         time.text = timeString(minutes, seconds)
     }
 
 }
-
-private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
 
