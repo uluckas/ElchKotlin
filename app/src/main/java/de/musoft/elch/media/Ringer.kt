@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.PowerManager
-import com.example.elch.app.R
+import de.musoft.elch.app.R
 import de.musoft.elch.extensions.powerManager
 import de.musoft.elch.extensions.uriForRessource
 

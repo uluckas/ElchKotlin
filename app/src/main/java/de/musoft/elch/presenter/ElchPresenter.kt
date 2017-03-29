@@ -2,9 +2,6 @@ package de.musoft.elch.presenter
 
 import de.musoft.elch.alarm.AlarmTimer
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.TimeUnit
 
 /**
@@ -41,7 +38,7 @@ class ElchPresenter(val alarmTimer: AlarmTimer) {
     }
 
     fun onSecondsChanged(remainingSeconds: Long) {
-        view?.setRemainingTime(remainingSeconds)
+        view?.setRemainingTime(remainingSeconds, TimeUnit.SECONDS)
     }
 
 

@@ -49,10 +49,12 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            ext.betaDistributionGroupAliases="testers"
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.betaDistributionGroupAliases="testers"
         }
     }
     productFlavors {
@@ -72,4 +74,5 @@ dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-coroutines:$kotlin_coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
+    compile project(':hockeykit')
 }
