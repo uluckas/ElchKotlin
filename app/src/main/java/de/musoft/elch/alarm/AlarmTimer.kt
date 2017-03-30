@@ -16,19 +16,20 @@ import java.util.*
 
 private const val S_IN_MS = 1000L
 
+typealias SecondsChangedCallbackType = (Long) -> Unit
+
 class AlarmTimer(private val applicationContext: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val secondsChangedCallbacks = ArrayList<(Long) -> Unit>()
+    private val secondsChangedCallbacks = ArrayList<SecondsChangedCallbackType>()
     private var secondsChangeTimer: Timer? = null
     private val alarmManager: AlarmManager = applicationContext.alarmManager
     private val model = AlarmTimerModel(applicationContext) {
         fireSecondsChanged()
     }
     val remainingTime = model.computedRemainingTimeMS
-    val isRunning = model.countdownRunning
 
-    fun addSecondsListener(secondsChangedCallback: (Long) -> Unit) {
+    fun addSecondsListener(secondsChangedCallback: SecondsChangedCallbackType) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
         secondsChangedCallbacks.add(secondsChangedCallback)
         if (hadNoListeners && model.countdownRunning) {
@@ -38,7 +39,7 @@ class AlarmTimer(private val applicationContext: Context) {
         secondsChangedCallback(model.computedRemainigTimeS)
     }
 
-    fun removeSecondsListener(listener: (Long) -> Unit) {
+    fun removeSecondsListener(listener: SecondsChangedCallbackType) {
         secondsChangedCallbacks.remove(listener)
         if (secondsChangedCallbacks.isEmpty()) {
             cancelSecondsChangeTimer()
@@ -96,7 +97,7 @@ class AlarmTimer(private val applicationContext: Context) {
 
     private fun startSecondsChangeTimer() {
         val newSecondsChangeTimer = Timer("SecondsChangeTimer", true)
-        val onSecondChanged: TimerTask = object : TimerTask() {
+        val onSecondChanged = object : TimerTask() {
             override fun run() {
                 runOnMainThread {
                     if (model.computedRemainingTimeMS <= 0L) {

@@ -21,7 +21,7 @@ private const val SPIELZEIT_DURATION_MIN: Long = 8L
 
 private val SPIELZEIT_DURATION_MS = SPIELZEIT_DURATION_MIN.mToMs()
 
-class AlarmTimerModel(private val applicationContext: Context, val secondsChangedCallback: () -> Unit) {
+class AlarmTimerModel(applicationContext: Context, val secondsChangedCallback: () -> Unit) {
     private val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("TimerState", Context.MODE_PRIVATE)
     internal var alarmTimeMS: Long by LongSharedPreferenceShadow(sharedPreferences, KEY_ALARM_TIME_MS, 0)
     internal var countdownRunning: Boolean by BooleanSharedPreferenceShadow(sharedPreferences, KEY_TIMER_RUNNING, false)
