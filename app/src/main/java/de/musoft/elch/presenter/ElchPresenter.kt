@@ -21,6 +21,7 @@ class ElchPresenter(val alarmTimer: AlarmTimer) {
 
     fun attachView(view: ElchView) {
         this.view = view
+        alarmTimer.addSecondsListener(this::onSecondsChanged)
         view.setRemainingTime(alarmTimer.remainingTime, TimeUnit.MILLISECONDS)
     }
 
