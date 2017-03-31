@@ -8,7 +8,11 @@ import android.os.Handler
 import android.os.Looper
 import de.musoft.elch.broadcastreceivers.getAlarmIntent
 import de.musoft.elch.extensions.alarmManager
-import java.util.*
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by luckas on 1/29/15.
@@ -22,7 +26,7 @@ class AlarmTimer(private val applicationContext: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val secondsChangedCallbacks = ArrayList<SecondsChangedCallbackType>()
-    private var secondsChangeTimer: Timer? = null
+    private var secondsChangeTimer: Job? = null
     private val alarmManager: AlarmManager = applicationContext.alarmManager
     private val model = AlarmTimerModel(applicationContext) {
         fireSecondsChanged()
@@ -96,21 +100,17 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     private fun startSecondsChangeTimer() {
-        val newSecondsChangeTimer = Timer("SecondsChangeTimer", true)
-        val onSecondChanged = object : TimerTask() {
-            override fun run() {
-                runOnMainThread {
-                    if (model.computedRemainingTimeMS <= 0L) {
-                        cancelSecondsChangeTimer()
-                    }
-                    fireSecondsChanged()
+        secondsChangeTimer?.cancel()
+        secondsChangeTimer = launch(UI) {
+            while (true) {
+                val timeNextSecondMS = model.computedRemainingTimeMS % S_IN_MS
+                if (model.computedRemainingTimeMS <= 0L) {
+                    break
                 }
+                delay(timeNextSecondMS, TimeUnit.MILLISECONDS)
+                fireSecondsChanged()
             }
-
         }
-        val timeNextSecondMS = model.computedRemainingTimeMS % S_IN_MS
-        newSecondsChangeTimer.scheduleAtFixedRate(onSecondChanged, timeNextSecondMS, S_IN_MS)
-        secondsChangeTimer = newSecondsChangeTimer
     }
 
     private fun fireSecondsChanged() {
