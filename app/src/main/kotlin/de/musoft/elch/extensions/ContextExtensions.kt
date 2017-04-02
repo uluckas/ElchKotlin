@@ -11,7 +11,7 @@ import android.os.PowerManager
 
 inline fun Context.uriForRessource(resourceId: Int) = Uri.Builder().
         scheme("android.resource").
-        appendPath(packageName).
+        authority(packageName).
         appendPath(resourceId.toString()).
         build()
 
