@@ -1,5 +1,4 @@
 include ':app'
-
-
+include ':businessLogic'
 include ':hockeykit'
 project(':hockeykit').projectDir = new File('HockeyKit/client/Android')

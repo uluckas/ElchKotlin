@@ -1,0 +1,17 @@
+apply plugin: 'kotlin'
+
+repositories {
+    maven { url "https://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines:$kotlin_coroutines_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+}

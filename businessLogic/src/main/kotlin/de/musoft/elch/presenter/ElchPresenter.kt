@@ -2,7 +2,6 @@ package de.musoft.elch.presenter
 
 import de.musoft.elch.alarm.AlarmTimer
 import kotlinx.coroutines.experimental.Job
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by ulu on 23/03/17.
@@ -10,7 +9,9 @@ import java.util.concurrent.TimeUnit
 
 interface ElchView {
 
-    fun setRemainingTime(value: Long, unit: TimeUnit)
+    var presenter: ElchPresenter?
+
+    fun setRemainingSeconds(value: Long)
 
 }
 
@@ -22,7 +23,7 @@ class ElchPresenter(val alarmTimer: AlarmTimer) {
     fun attachView(view: ElchView) {
         this.view = view
         alarmTimer.addSecondsListener(this::onSecondsChanged)
-        view.setRemainingTime(alarmTimer.remainingTime, TimeUnit.MILLISECONDS)
+        view.setRemainingSeconds(alarmTimer.remainingTimeS)
     }
 
     fun detachView() {
@@ -38,8 +39,8 @@ class ElchPresenter(val alarmTimer: AlarmTimer) {
         alarmTimer.resetCountdown()
     }
 
-    fun onSecondsChanged(remainingSeconds: Long) {
-        view?.setRemainingTime(remainingSeconds, TimeUnit.SECONDS)
+    fun onSecondsChanged() {
+        view?.setRemainingSeconds(alarmTimer.remainingTimeS)
     }
 
 

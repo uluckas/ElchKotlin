@@ -1,18 +1,10 @@
 package de.musoft.elch.alarm
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import de.musoft.elch.broadcastreceivers.getAlarmIntent
-import de.musoft.elch.extensions.alarmManager
 import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * Created by luckas on 1/29/15.
@@ -20,18 +12,36 @@ import java.util.concurrent.TimeUnit
 
 private const val S_IN_MS = 1000L
 
-typealias SecondsChangedCallbackType = (Long) -> Unit
+typealias SecondsChangedCallbackType = () -> Unit
 
-class AlarmTimer(private val applicationContext: Context) {
+class AlarmTimer(private val model : Model,
+                 private val alarmScheduler : Scheduler,
+                 private val eventContext : CoroutineContext) {
 
-    private val mainHandler = Handler(Looper.getMainLooper())
+    interface Model {
+        var secondsChangedCallback: SecondsChangedCallbackType?
+        var countdownRunning: Boolean
+        var alarmTimeMS: Long
+        var remainingTimeMS: Long
+        val computedRemainingTimeMs: Long
+        val computedRemainingTimeS: Long
+        val computedAlarmTimeMS: Long
+        fun reset()
+    }
+
+    interface Scheduler {
+        fun setAlarm(alarmTimeMS: Long)
+        fun cancelAlarm()
+    }
+
     private val secondsChangedCallbacks = ArrayList<SecondsChangedCallbackType>()
     private var secondsChangeTimer: Job? = null
-    private val alarmManager: AlarmManager = applicationContext.alarmManager
-    private val model = AlarmTimerModel(applicationContext) {
-        fireSecondsChanged()
+    val remainingTimeS
+        get() = model.computedRemainingTimeS
+
+    init {
+        model.secondsChangedCallback = this::fireSecondsChanged
     }
-    val remainingTime = model.computedRemainingTimeMS
 
     fun addSecondsListener(secondsChangedCallback: SecondsChangedCallbackType) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
@@ -40,7 +50,7 @@ class AlarmTimer(private val applicationContext: Context) {
             startSecondsChangeTimer()
         }
         // Give initial update to the secondsChangedCallback
-        secondsChangedCallback(model.computedRemainigTimeS)
+        secondsChangedCallback()
     }
 
     fun removeSecondsListener(listener: SecondsChangedCallbackType) {
@@ -65,7 +75,7 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     private fun pauseCountdown() {
-        model.remainingTimeMS = model.computedRemainingTimeMS
+        model.remainingTimeMS = model.computedRemainingTimeMs
         cancelAlarm()
         cancelSecondsChangeTimer()
     }
@@ -78,19 +88,13 @@ class AlarmTimer(private val applicationContext: Context) {
     }
 
     private fun setAlarm(newAlarmTimeMS: Long) {
-        val pendingIntent = getAlarmIntent(applicationContext, 0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, newAlarmTimeMS, pendingIntent)
-        } else {
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, newAlarmTimeMS, pendingIntent)
-        }
+        alarmScheduler.setAlarm(newAlarmTimeMS)
         model.alarmTimeMS = newAlarmTimeMS
         model.countdownRunning = true
     }
 
     private fun cancelAlarm() {
-        val pendingIntent = getAlarmIntent(applicationContext, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.cancel(pendingIntent)
+        alarmScheduler.cancelAlarm()
         model.countdownRunning = false
     }
 
@@ -101,27 +105,22 @@ class AlarmTimer(private val applicationContext: Context) {
 
     private fun startSecondsChangeTimer() {
         secondsChangeTimer?.cancel()
-        secondsChangeTimer = launch(UI) {
+        secondsChangeTimer = launch(eventContext) {
             while (true) {
-                val timeNextSecondMS = model.computedRemainingTimeMS % S_IN_MS
-                if (model.computedRemainingTimeMS <= 0L) {
+                val remainingTimeMs = model.computedRemainingTimeMs
+                if (remainingTimeMs <= 0L) {
                     break
                 }
-                delay(timeNextSecondMS, TimeUnit.MILLISECONDS)
+                val timeToNextSecondMS = remainingTimeMs % S_IN_MS
+                delay(timeToNextSecondMS, TimeUnit.MILLISECONDS)
                 fireSecondsChanged()
             }
         }
     }
 
     private fun fireSecondsChanged() {
-        val computedRemainigTimeS = model.computedRemainigTimeS
         for (secondsChangedCallback in secondsChangedCallbacks) {
-            secondsChangedCallback(computedRemainigTimeS)
+            secondsChangedCallback()
         }
     }
-
-    private fun runOnMainThread(function: () -> Unit) {
-        mainHandler.post(function)
-    }
-
 }
