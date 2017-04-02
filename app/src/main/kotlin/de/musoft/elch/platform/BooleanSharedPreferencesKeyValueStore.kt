@@ -15,6 +15,7 @@ class BooleanSharedPreferencesKeyValueStore(context: Context) :
         Log.d("Prefs", "read '$key' ($default) -> '$value'")
         return value
     }
+
     override fun write(key: String, value: Boolean) {
         sharedPreferences.edit().putBoolean(key, value).apply()
         Log.d("Prefs", "write '$key', '$value'")

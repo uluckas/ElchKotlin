@@ -14,9 +14,9 @@ private const val S_IN_MS = 1000L
 
 typealias SecondsChangedCallbackType = () -> Unit
 
-class AlarmTimer(private val model : Model,
-                 private val alarmScheduler : Scheduler,
-                 private val eventContext : CoroutineContext) {
+class AlarmTimer(private val model: Model,
+                 private val alarmScheduler: Scheduler,
+                 private val eventContext: CoroutineContext) {
 
     interface Model {
         var secondsChangedCallback: SecondsChangedCallbackType?

@@ -1,14 +1,12 @@
 package de.musoft.elch.activities
 
 import android.app.Activity
-import android.app.AlarmManager
 import android.content.Context
 import android.os.Bundle
 import de.musoft.elch.alarm.AlarmScheduler
 import de.musoft.elch.alarm.AlarmTimer
 import de.musoft.elch.alarm.AlarmTimerModel
 import de.musoft.elch.app.R.layout.activity_elch
-import de.musoft.elch.extensions.alarmManager
 import de.musoft.elch.extensions.mToS
 import de.musoft.elch.platform.BooleanSharedPreferencesKeyValueStore
 import de.musoft.elch.platform.LongSharedPreferencesKeyValueStore
@@ -23,7 +21,7 @@ private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%0
 
 abstract class ElchBaseActivity : Activity(), ElchView {
 
-    class Router(applicationContext: Context, private val view : ElchView) {
+    class Router(applicationContext: Context, private val view: ElchView) {
         private val model = AlarmTimerModel(BooleanSharedPreferencesKeyValueStore(applicationContext),
                 LongSharedPreferencesKeyValueStore(applicationContext),
                 RealtimeClockSource())
