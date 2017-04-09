@@ -13,13 +13,13 @@ import de.musoft.elch.extensions.alarmManager
 
 class AlarmScheduler(private val applicationContext: Context) : AlarmTimer.Scheduler {
 
-    override fun setAlarm(newAlarmTimeMS: Long) {
+    override fun setAlarm(alarmTimeMS: Long) {
         val alarmManager = applicationContext.alarmManager
         val pendingIntent = getAlarmIntent(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, newAlarmTimeMS, pendingIntent)
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTimeMS, pendingIntent)
         } else {
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, newAlarmTimeMS, pendingIntent)
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTimeMS, pendingIntent)
         }
     }
 
