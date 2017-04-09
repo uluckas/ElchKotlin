@@ -44,7 +44,7 @@ abstract class ElchBaseActivity : Activity(), ElchView {
         start_button.setOnClickListener { presenter?.startStopClicked() }
         reset_button.setOnClickListener { presenter?.resetClicked() }
 
-        val view = this as ElchView
+        val view: ElchView = this
         val router = Router(applicationContext, view)
         router.showElch()
     }
