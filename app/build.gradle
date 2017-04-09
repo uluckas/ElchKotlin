@@ -19,6 +19,12 @@ repositories {
     maven { url "https://dl.bintray.com/kotlin/kotlin-eap-1.1" }
 }
 
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
 def keystorePropertiesFile = rootProject.file("keystore.properties");
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
