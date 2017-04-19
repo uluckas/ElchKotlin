@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
     }
 
@@ -16,7 +15,6 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
-    maven { url "https://dl.bintray.com/kotlin/kotlin-eap-1.1" }
 }
 
 kotlin {
