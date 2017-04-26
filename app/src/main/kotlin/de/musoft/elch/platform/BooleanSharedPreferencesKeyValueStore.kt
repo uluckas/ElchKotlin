@@ -7,8 +7,8 @@ import android.util.Log
  * Created by ulu on 31/03/17.
  */
 
-class BooleanSharedPreferencesKeyValueStore(context: Context) :
-        SharedPreferencesKeyValueStoreBase<Boolean>(context) {
+class BooleanSharedPreferencesKeyValueStore(context: Context, name: String) :
+        SharedPreferencesKeyValueStoreBase<Boolean>(context, name) {
 
     override fun read(key: String, default: Boolean): Boolean {
         val value = sharedPreferences.getBoolean(key, default)

@@ -7,8 +7,8 @@ import android.util.Log
  * Created by ulu on 31/03/17.
  */
 
-class LongSharedPreferencesKeyValueStore(context: Context) :
-        SharedPreferencesKeyValueStoreBase<Long>(context) {
+class LongSharedPreferencesKeyValueStore(context: Context, name: String) :
+        SharedPreferencesKeyValueStoreBase<Long>(context, name) {
 
     override fun read(key: String, default: Long): Long {
         val value = sharedPreferences.getLong(key, default)

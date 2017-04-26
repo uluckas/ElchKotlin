@@ -19,11 +19,13 @@ import java.util.concurrent.TimeUnit
 
 private fun timeString(minutes: Long, seconds: Long) = String.format("00:%02d:%02d", minutes, seconds)
 
+private val preferencesName = "TimerState"
+
 abstract class ElchBaseActivity : Activity(), ElchView {
 
     class Router(applicationContext: Context, private val view: ElchView) {
-        private val model = AlarmTimerModel(BooleanSharedPreferencesKeyValueStore(applicationContext),
-                LongSharedPreferencesKeyValueStore(applicationContext),
+        private val model = AlarmTimerModel(BooleanSharedPreferencesKeyValueStore(applicationContext, preferencesName),
+                LongSharedPreferencesKeyValueStore(applicationContext, preferencesName),
                 RealtimeClockSource())
         private val alarmScheduler = AlarmScheduler(applicationContext)
         private val alarmTimer = AlarmTimer(model, alarmScheduler, UI)
