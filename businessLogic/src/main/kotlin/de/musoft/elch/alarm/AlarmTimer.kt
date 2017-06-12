@@ -45,7 +45,7 @@ class AlarmTimer(private val model: Model,
 
     fun addSecondsListener(secondsChangedCallback: SecondsChangedCallbackType) {
         val hadNoListeners = secondsChangedCallbacks.isEmpty()
-        secondsChangedCallbacks.add(secondsChangedCallback)
+        secondsChangedCallbacks += secondsChangedCallback
         if (hadNoListeners && model.countdownRunning) {
             startSecondsChangeTimer()
         }
@@ -54,7 +54,7 @@ class AlarmTimer(private val model: Model,
     }
 
     fun removeSecondsListener(listener: SecondsChangedCallbackType) {
-        secondsChangedCallbacks.remove(listener)
+        secondsChangedCallbacks -= listener
         if (secondsChangedCallbacks.isEmpty()) {
             cancelSecondsChangeTimer()
         }
@@ -119,7 +119,7 @@ class AlarmTimer(private val model: Model,
     }
 
     private fun fireSecondsChanged() {
-        for (secondsChangedCallback in secondsChangedCallbacks) {
+        secondsChangedCallbacks.forEach { secondsChangedCallback ->
             secondsChangedCallback()
         }
     }
