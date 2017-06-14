@@ -10,7 +10,7 @@ open class KeyValueStorePropertyDelegate<K, V>(val keyValueStore: KeyValueStore<
                                                val key: K,
                                                default: V) {
 
-    private var backingField: V = keyValueStore.read(key, default)
+    private var backingField = keyValueStore.read(key, default)
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): V {
         return backingField
