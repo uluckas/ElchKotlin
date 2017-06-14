@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:src="@drawable/elch" />
+        android:src="@drawable/elch"
+        android:contentDescription="Elch"/>
 
     <TextView
         android:id="@+id/timeLabel"
@@ -21,7 +22,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="xx:xx:xx"
-        android:textSize="24pt" />
+        android:textSize="24pt"
+        tools:ignore="HardcodedText" />
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->

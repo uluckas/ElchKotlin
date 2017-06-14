@@ -7,7 +7,7 @@ import io.fabric.sdk.android.Fabric
 
 class ElchActivity : ElchBaseActivity() {
 
-    protected override fun setupFabric() {
+    override fun setupFabric() {
         Fabric.with(Fabric.Builder(this)
                 .kits(Crashlytics(), Beta())
                 .logger(DefaultLogger(1))

@@ -1,7 +1,6 @@
 package de.musoft.elch.presenter
 
 import de.musoft.elch.alarm.AlarmTimer
-import kotlinx.coroutines.experimental.Job
 
 /**
  * Created by ulu on 23/03/17.
@@ -18,7 +17,6 @@ interface ElchView {
 class ElchPresenter(val alarmTimer: AlarmTimer) {
 
     var view = null as ElchView?
-    var timerJob = null as Job?
 
     fun attachView(view: ElchView) {
         this.view = view

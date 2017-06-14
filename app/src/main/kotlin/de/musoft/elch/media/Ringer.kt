@@ -20,7 +20,7 @@ import kotlin.coroutines.experimental.suspendCoroutine
 private const val volume = 1.0f
 
 suspend fun MediaPlayer.prepareSuspending(): Unit =
-        suspendCoroutine<Unit> { cont ->
+        suspendCoroutine { cont ->
             try {
                 setOnPreparedListener {
                     cont.resume(Unit)

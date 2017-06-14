@@ -9,7 +9,7 @@ import android.os.PowerManager
  * Created by luckas on 15.09.16.
  */
 
-fun Context.uriForRessource(resourceId: Int) = Uri.Builder().
+fun Context.uriForRessource(resourceId: Int): Uri = Uri.Builder().
         scheme("android.resource").
         authority(packageName).
         appendPath(resourceId.toString()).
