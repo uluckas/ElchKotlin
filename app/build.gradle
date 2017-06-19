@@ -37,7 +37,7 @@ android {
         }
     }
     compileSdkVersion 21
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "de.musoft.elch.app"
         minSdkVersion 9
