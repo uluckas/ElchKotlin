@@ -12,9 +12,9 @@
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/elch"
         android:gravity="center"
-        android:src="@drawable/elch"
-        android:contentDescription="Elch"/>
+        android:src="@drawable/elch" />
 
     <TextView
         android:id="@+id/timeLabel"
