@@ -7,9 +7,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 /**
  * LICENSE INFORMATION
- * 
+ * <p>
  * Copyright (c) 2009 nullwire aps
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -18,10 +18,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -30,7 +30,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
+ * <p>
  * Contributors:
  * Mads Kristiansen, mads.kristiansen@nullwire.com
  * Glen Humphrey
@@ -40,33 +40,32 @@ import android.content.pm.PackageManager.NameNotFoundException;
  **/
 
 public class Constants {
-  // Since the exception handler doesn't have access to the context,
-  // or anything really, the library prepares these values for when
-  // the handler needs them.
-  public static String FILES_PATH = null;
-  public static String APP_VERSION = null;
-  public static String APP_PACKAGE = null;
-  
-  public static String ANDROID_VERSION  = null;
-  public static String PHONE_MODEL = null;
-  public static String PHONE_MANUFACTURER = null;
-  
-  public static String TAG = "HockeyApp";
+    // Since the exception handler doesn't have access to the context,
+    // or anything really, the library prepares these values for when
+    // the handler needs them.
+    public static String FILES_PATH = null;
+    public static String APP_VERSION = null;
+    public static String APP_PACKAGE = null;
 
-  public static void loadFromContext(Context context) {
-    Constants.ANDROID_VERSION = android.os.Build.VERSION.RELEASE;
-    Constants.PHONE_MODEL = android.os.Build.MODEL;
-    Constants.PHONE_MANUFACTURER = android.os.Build.MANUFACTURER;
+    public static String ANDROID_VERSION = null;
+    public static String PHONE_MODEL = null;
+    public static String PHONE_MANUFACTURER = null;
 
-    PackageManager packageManager = context.getPackageManager();
-    try {
-      PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-      Constants.APP_VERSION = "" + packageInfo.versionCode;
-      Constants.APP_PACKAGE = packageInfo.packageName;
-      Constants.FILES_PATH = context.getFilesDir().getAbsolutePath();
-    } 
-    catch (NameNotFoundException e) {
-      e.printStackTrace();
+    public static String TAG = "HockeyApp";
+
+    public static void loadFromContext(Context context) {
+        Constants.ANDROID_VERSION = android.os.Build.VERSION.RELEASE;
+        Constants.PHONE_MODEL = android.os.Build.MODEL;
+        Constants.PHONE_MANUFACTURER = android.os.Build.MANUFACTURER;
+
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            Constants.APP_VERSION = "" + packageInfo.versionCode;
+            Constants.APP_PACKAGE = packageInfo.packageName;
+            Constants.FILES_PATH = context.getFilesDir().getAbsolutePath();
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
-  }
 }

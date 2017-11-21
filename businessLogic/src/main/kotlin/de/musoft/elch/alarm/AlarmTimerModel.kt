@@ -3,6 +3,7 @@ package de.musoft.elch.alarm
 import de.musoft.elch.delegates.KeyValueStore
 import de.musoft.elch.delegates.KeyValueStorePropertyDelegate
 import de.musoft.elch.platform.TimeSource
+import de.musoft.kotlinutils.events.PropertyChangeEvent
 import kotlin.reflect.KProperty
 
 /**
@@ -19,29 +20,30 @@ private val SPIELZEIT_DURATION_MS = SPIELZEIT_DURATION_MIN * 60 * 1000
 
 class AlarmTimerModel(booleanStore: KeyValueStore<String, Boolean>,
                       longStore: KeyValueStore<String, Long>,
-                      val timeSource: TimeSource) : AlarmTimer.Model {
+                      val timeSource: TimeSource) {
 
-    override var secondsChangedCallback: SecondsChangedCallbackType? = null
-    override var alarmTimeMS: Long by KeyValueStorePropertyDelegate(longStore, KEY_ALARM_TIME_MS, 0)
-    override var countdownRunning: Boolean by KeyValueStorePropertyDelegate(booleanStore, KEY_TIMER_RUNNING, false)
+    var remainingTimeMSEvent = PropertyChangeEvent<Long>()
+    var alarmTimeMS: Long by KeyValueStorePropertyDelegate(longStore, KEY_ALARM_TIME_MS, 0)
+    var countdownRunning: Boolean by KeyValueStorePropertyDelegate(booleanStore, KEY_TIMER_RUNNING, false)
 
-    override var remainingTimeMS: Long by object : KeyValueStorePropertyDelegate<String, Long>(longStore, KEY_REMAINING_TIME_MS, SPIELZEIT_DURATION_MS) {
+    var remainingTimeMS: Long by object : KeyValueStorePropertyDelegate<String, Long>(longStore, KEY_REMAINING_TIME_MS, SPIELZEIT_DURATION_MS) {
         override operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Long) {
+            val oldValue = getValue(thisRef, property)
             super.setValue(thisRef, property, value)
-            secondsChangedCallback?.invoke()
+            remainingTimeMSEvent.fireChange(oldValue, value)
         }
     }
 
-    override val computedAlarmTimeMS: Long
+    val computedAlarmTimeMS: Long
         get() = if (countdownRunning) alarmTimeMS else getTimeMs() + remainingTimeMS
 
-    override val computedRemainingTimeMs: Long
+    val computedRemainingTimeMs: Long
         get() {
             val computedRemainigTimeMs = if (countdownRunning) alarmTimeMS - getTimeMs() else remainingTimeMS
             return if (computedRemainigTimeMs < 0) 0 else computedRemainigTimeMs
         }
 
-    override val computedRemainingTimeS: Long
+    val computedRemainingTimeS: Long
         get() = (computedRemainingTimeMs + 500L) / 1000L
 
     init {
@@ -59,8 +61,9 @@ class AlarmTimerModel(booleanStore: KeyValueStore<String, Boolean>,
         }
     }
 
-    override fun reset() {
+    fun reset() {
         remainingTimeMS = SPIELZEIT_DURATION_MS
+        countdownRunning = false
     }
 
     private fun getTimeMs() = timeSource.getTimeMs()

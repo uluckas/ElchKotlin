@@ -1,2 +1,2 @@
-include ':app', ':businessLogic', ':hockeykit'
+include ':app', ':businessLogic', ':kotlinutils', ':hockeykit'
 project(':hockeykit').projectDir = new File('HockeyKit/client/Android')
