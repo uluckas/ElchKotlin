@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics
 
 class AndroidApp : AppCompatActivity() { // AppCompatActivity for wider compatibility, or ComponentActivity
     override fun onCreate(savedInstanceState: Bundle?) {
+        initAppContext(this) // Initialize context for settings
         super.onCreate(savedInstanceState)
 
         // Initialize Fabric with Crashlytics

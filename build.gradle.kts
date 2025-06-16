@@ -44,7 +44,9 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(kotlin("test")) // Should be there
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1") // e.g., 1.7.1, for TestScope, runTest
+                implementation("com.russhwolf:multiplatform-settings-test:1.0.0") // For MapSettings (check latest version)
             }
         }
         val androidMain by getting {

@@ -183,4 +183,12 @@ class CommonAlarmTimer(
             secondsChangedCallback(computedRemainigTimeS)
         }
     }
+
+    // Method to expose timer state
+    fun isTimerRunning(): Boolean = this.timerRunning
+
+    // Method to trigger initial update for listeners
+    fun triggerInitialUpdate() {
+        fireSecondsChanged()
+    }
 }
