@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.musoft.elch.kmp.app">
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- Add other permissions from the original app's manifest later as needed -->
+
+    <application
+        android:allowBackup="false"
+        android:icon="@android:drawable/ic_dialog_info" <!-- Placeholder icon, will be replaced -->
+        android:label="ElchApp KMP"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar"> <!-- Basic theme -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="16d7bd3b553b4a070219ee472258ab1d8bb0c0d1" />
+        <activity
+            android:name=".AndroidApp"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- Other components like receivers will be added later -->
+    </application>
+</manifest>

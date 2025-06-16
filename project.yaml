@@ -1,0 +1,38 @@
+name: ElchAppKMPiOS
+options:
+  bundleIdPrefix: de.musoft.elch.kmp
+targets:
+  ElchAppKMPiOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "13.0" # Compose typically needs a relatively recent iOS
+    info:
+      path: ./src/iosMain/Info.plist # Path to the Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen # Standard property
+        # Add other essential properties as discovered or needed
+        # CFBundleDisplayName: ElchAppKMP # Already in Info.plist
+        # CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER) # Already in Info.plist
+    settings:
+      base:
+        PRODUCT_NAME: ElchAppKMPiOS
+        # SWIFT_OBJC_BRIDGING_HEADER: ElchAppKMPiOS/ElchAppKMPiOS-Bridging-Header.h # Needed if mixing Swift/ObjC
+        SWIFT_VERSION: "5.0" # Specify Swift version
+        # Other settings like enabling Bitcode (ENABLE_BITCODE=NO might be needed for KMP)
+        # The KMP framework from :shared or :common module needs to be linked.
+        # This typically involves setting FRAMEWORK_SEARCH_PATHS, OTHER_LDFLAGS
+        # and adding it to "Frameworks, Libraries, and Embedded Content".
+        # Example (conceptual, actual paths depend on KMP build output):
+        # FRAMEWORK_SEARCH_PATHS: "$(inherited) $(PROJECT_DIR)/../shared/build/XCFrameworks/release"
+        # OTHER_LDFLAGS: "$(inherited) -framework shared" # 'shared' or your KMP module name
+    sources:
+      - path: src/iosMain/ # Include the directory containing Main.ios.kt and Info.plist
+        # Xcodegen will pick up .swift or .m files here for the main application delegate etc.
+        # For a pure KMP app where Kotlin generates the UIViewController,
+        # you'll need a minimal Swift AppDelegate.
+    # Current KMP setup often involves a "shared" or "composeApp" module producing the framework.
+    # This project.yaml assumes this current file is for the iOS app that CONSUMES the KMP module.
+    # If this root build.gradle.kts IS the KMP module, then xcodegen is for a wrapper iOS app.
+    # For now, let's assume this is setting up the iOS app that will link against the KMP framework.
+    # The KMP Gradle plugin has tasks like `embedAndSignAppleFrameworkForXcode`
+    # which helps integrate the framework. The Xcodegen setup needs to align with that.

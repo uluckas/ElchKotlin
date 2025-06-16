@@ -1,5 +1,0 @@
-include ':app'
-
-
-include ':hockeykit'
-project(':hockeykit').projectDir = new File('HockeyKit/client/Android')
